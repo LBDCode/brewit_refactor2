@@ -3,6 +3,7 @@ import sys
 
 from flask import Flask, jsonify
 from flask_restx import Resource, Api
+from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
@@ -12,8 +13,38 @@ api = Api(app)
 app_settings = os.getenv('APP_SETTINGS')
 app.config.from_object(app_settings)
 
+db = SQLAlchemy(app)
 
-class Recipe(Resource):
+class Recipe(db.Model):
+    __tablename__='recipes'
+    recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.Text, nullable=True)
+    original_gravity = db.Column(db.Text, nullable=True)
+    final_gravity = db.Column(db.Text, nullable=True)
+    abv = db.Column(db.Text, nullable=True)
+    ibu = db.Column(db.Text, nullable=True)
+    srm = db.Column(db.Text, nullable=True)
+    batch_yield = db.Column(db.Text, nullable=True)
+    directions = db.Column(db.Text, nullable=True)
+    style = db.Column(db.Text, nullable=True)
+
+    def __init__(self, recipe_id, title, original_gravity, abv, 
+    ibu, srm, batch_yield, directions, style):
+        self.recipe_id = recipe_id
+        self.title = title
+        self.original_gravity = original_gravity
+        self.abv = abv
+        self.ibu = ibu
+        self.srm = srm
+        self.batch_yield = batch_yield
+        self.directions = directions
+        self.style = style
+        
+
+
+
+
+class RecipePing(Resource):
     def get(self):
         return {
             'recipe_id': 2327, 
@@ -29,4 +60,4 @@ class Recipe(Resource):
         }
 
 
-api.add_resource(Recipe, '/recipe')
+api.add_resource(RecipePing, '/recipe')

@@ -10,10 +10,17 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# dependencies
+RUN apt-get update \
+  && apt-get -y install netcat gcc postgresql \
+  && apt-get clean
+
+
 # add/install requirements and copy app
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
 
 # run 
-CMD python manage.py run -h 0.0.0.0
+COPY ./entrypoint.sh .
+RUN chmod +x /usr/src/app/entrypoint.sh
