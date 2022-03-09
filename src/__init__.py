@@ -19,6 +19,9 @@ def create_app(script_info=None):
     from src.api.recipe import recipe_blueprint
     app.register_blueprint(recipe_blueprint)
 
+    from src.api.users import users_blueprint
+    app.register_blueprint(users_blueprint)
+
     @app.shell_context_processor
     def ctx():
         return{ 'app': app, 'db': db}
