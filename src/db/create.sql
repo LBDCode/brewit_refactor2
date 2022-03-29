@@ -1,2 +1,4 @@
 CREATE DATABASE brewit_dev;
 CREATE DATABASE brewit_test;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
