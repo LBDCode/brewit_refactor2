@@ -35,10 +35,38 @@ class Recipes(Resource):
 
 class RecipesList(Resource):
 
+    @api.expect(recipe, validate=True)
+    def post(self):
+        post_data = request.get_json()
+        title = post_data.get('title') 
+        original_gravity = post_data.get('original_gravity') 
+        final_gravity = post_data.get('final_gravity') 
+        abv = post_data.get('abv')  
+        ibu = post_data.get('ibu')  
+        srm = post_data.get('srm') 
+        yield_amt = post_data.get('yield_amt') 
+        directions = post_data.get('directions') 
+        style = post_data.get('style') 
+
+        response_object = {}
+
+        recipe = Recipe.query.filter_by(title=title).first()
+        
+        if recipe:
+            response_object['message'] = 'Sorry.  That recipe already exists.'
+            return response_object, 400
+
+        db.session.add(Recipe(title=title, original_gravity=original_gravity, final_gravity=final_gravity, abv=abv, ibu=ibu, srm=srm,
+            yield_amt=yield_amt, directions=directions, style=style))
+        db.session.commit()
+
+        response_object['message'] = f'Added recipe: {title}'
+        return response_object, 201
+
+
     @api.marshal_with(recipe, as_list=True)
     def get(self):
         return Recipe.query.all(), 200
-
 
 
 
